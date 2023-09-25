@@ -18,7 +18,7 @@ async function getAllQuizzes(userId) {
 
 const handler = middy(async (event) => {
   try {
-    const userId = event.userId;
+    const userId = event.requestContext.authorizer.userId;
 
     const quizzes = await getAllQuizzes(userId);
     return sendResponse(200, { quizzes });
