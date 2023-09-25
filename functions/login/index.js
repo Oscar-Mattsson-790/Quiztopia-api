@@ -7,7 +7,7 @@ const middy = require("@middy/core");
 async function getUserByEmail(email) {
   const result = await db
     .query({
-      TableName: "Users",
+      TableName: "QuizUsers",
       IndexName: "EmailIndex",
       KeyConditionExpression: "email = :email",
       ExpressionAttributeValues: { ":email": email },

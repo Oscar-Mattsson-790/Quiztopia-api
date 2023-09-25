@@ -13,7 +13,7 @@ async function createUser(email, password, username) {
   };
 
   const params = {
-    TableName: "Users",
+    TableName: "QuizUsers",
     Item: newUser,
   };
 

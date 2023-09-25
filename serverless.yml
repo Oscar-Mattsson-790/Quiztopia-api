@@ -8,7 +8,7 @@ provider:
   region: eu-north-1
   iam:
     role: ${env:LAMBDA_ROLE}
-    deploymentMethod: direct
+  deploymentMethod: direct
 
 useDotenv: true
 
@@ -67,7 +67,7 @@ resources:
     UsersTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
-        TableName: Users
+        TableName: QuizUsers
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
