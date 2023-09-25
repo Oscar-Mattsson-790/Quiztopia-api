@@ -3,31 +3,33 @@ const jwt = require("jsonwebtoken");
 
 const validateToken = {
   before: async (request) => {
-    const currentPath = request.event.path;
-    if (currentPath === "/api/quiz/login") {
-      return;
-    }
+    try {
+      console.log("Headers:", request.event.headers);
+      if (!request.event.headers || !request.event.headers.authorization) {
+        throw new Error("401 Unauthorized");
+      }
 
-    console.log("Headers:", request.event.headers);
+      const token = request.event.headers.authorization
+        .replace("Bearer ", "")
+        .replace(/"/g, "");
+      console.log("Extracted Token:", token);
+      if (!token) throw new Error("401 Unauthorized");
 
-    if (!request.event.headers || !request.event.headers.authorization) {
+      const secret = process.env.JWT_SECRET;
+      const data = jwt.verify(token, secret);
+
+      console.log("Decoded Data:", data);
+      if (!request.event.requestContext) {
+        request.event.requestContext = {};
+      }
+      request.event.requestContext.authorizer = { userId: data.id };
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        console.error("JWT Verification Error:", error.message);
+        throw new Error("401 Unauthorized: Token verification failed");
+      }
       throw new Error("401 Unauthorized");
     }
-
-    const token = request.event.headers.authorization
-      .replace("Bearer ", "")
-      .replace(/"/g, "");
-    console.log("Extracted Token:", token);
-    if (!token) throw new Error("401 Unauthorized");
-
-    const secret = process.env.JWT_SECRET;
-    const data = jwt.verify(token, secret);
-
-    console.log("Decoded Data:", data);
-    if (!request.event.requestContext) {
-      request.event.requestContext = {};
-    }
-    request.event.requestContext.authorizer = { userId: data.id };
   },
   onError: async (request) => {
     if (request.error.message === "401 Unauthorized") {

@@ -3,7 +3,6 @@ const { db } = require("../../services/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const middy = require("@middy/core");
-const { validateToken } = require("../../middleware/auth");
 
 async function getUserByEmail(email) {
   const result = await db
@@ -14,7 +13,6 @@ async function getUserByEmail(email) {
       ExpressionAttributeValues: { ":email": email },
     })
     .promise();
-
   return result.Items[0];
 }
 
@@ -37,6 +35,6 @@ const handler = middy(async (event) => {
   } catch (error) {
     return sendError(500, error.message);
   }
-}).use(validateToken);
+});
 
 module.exports = { handler };
