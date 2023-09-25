@@ -3,6 +3,7 @@ const { db } = require("../../services/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const middy = require("@middy/core");
+const { validateToken } = require("../../middleware/auth");
 
 async function getUserByEmail(email) {
   const result = await db
@@ -13,6 +14,7 @@ async function getUserByEmail(email) {
       ExpressionAttributeValues: { ":email": email },
     })
     .promise();
+
   return result.Items[0];
 }
 
@@ -30,11 +32,11 @@ const handler = middy(async (event) => {
       return sendError(401, "Invalid password");
     }
 
-    const token = jwt.sign({ id: user.userId }, "a1b1c1");
+    const token = jwt.sign({ id: user.userId }, process.env.JWT_SECRET);
     return sendResponse(200, { token });
   } catch (error) {
     return sendError(500, error.message);
   }
-});
+}).use(validateToken);
 
 module.exports = { handler };
