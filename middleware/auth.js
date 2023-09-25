@@ -14,8 +14,7 @@ const validateToken = {
       console.log("Extracted Token:", token);
       if (!token) throw new Error("401 Unauthorized");
 
-      const secret = process.env.JWT_SECRET;
-      const data = jwt.verify(token, secret);
+      const data = jwt.verify(token, "a1b1c1");
 
       console.log("Decoded Data:", data);
       if (!request.event.requestContext) {

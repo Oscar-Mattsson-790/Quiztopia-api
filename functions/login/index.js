@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { sendResponse, sendError } = require("../../responses/index");
 const { db } = require("../../services/db");
 const bcrypt = require("bcryptjs");
