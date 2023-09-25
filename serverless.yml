@@ -22,43 +22,43 @@ functions:
   signup:
     handler: functions/signup/index.handler
     events:
-      - http:
+      - httpApi:
           path: /api/quiz/signup
           method: POST
   login:
     handler: functions/login/index.handler
     events:
-      - http:
+      - httpApi:
           path: /api/quiz/login
           method: POST
   listQuizzes:
     handler: functions/listQuizzes/index.handler
     events:
-      - http:
+      - httpApi:
           path: /api/quiz/quizzes
           method: GET
   getQuizQuestions:
     handler: functions/getQuizQuestions/index.handler
     events:
-      - http:
+      - httpApi:
           path: /api/quiz/{quizId}/questions
           method: GET
   createQuiz:
     handler: functions/createQuiz/index.handler
     events:
-      - http:
+      - httpApi:
           path: /api/quiz
           method: POST
   addQuestion:
     handler: functions/addQuestion/index.handler
     events:
-      - http:
+      - httpApi:
           path: /api/quiz/{quizId}/question
           method: POST
   deleteQuiz:
     handler: functions/deleteQuiz/index.handler
     events:
-      - http:
+      - httpApi:
           path: /api/quiz/{quizId}
           method: DELETE
 

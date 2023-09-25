@@ -9,9 +9,8 @@ const validateToken = {
         throw new Error("401 Unauthorized");
       }
 
-      const token = request.event.headers.authorization
-        .replace("Bearer ", "")
-        .replace(/"/g, "");
+      const token = request.event.headers.authorization.replace("Bearer ", "");
+
       console.log("Extracted Token:", token);
       if (!token) throw new Error("401 Unauthorized");
 
