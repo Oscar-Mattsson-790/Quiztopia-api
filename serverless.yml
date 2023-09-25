@@ -87,15 +87,3 @@ resources:
           - AttributeName: quizId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-
-    QuestionsTable:
-      Type: "AWS::DynamoDB::Table"
-      Properties:
-        TableName: Questions
-        AttributeDefinitions:
-          - AttributeName: questionId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: questionId
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
