@@ -1,5 +1,7 @@
 const { sendResponse, sendError } = require("../../responses");
 const { db } = require("../../services/db");
+const middy = require("@middy/core");
+const { validateToken } = require("../../middleware/auth");
 
 async function getAllQuizzes(userId) {
   const params = {
@@ -14,9 +16,9 @@ async function getAllQuizzes(userId) {
   return result.Items;
 }
 
-exports.handler = async (event) => {
+const handler = middy(async (event) => {
   try {
-    const userId = event.requestContext.authorizer.userId;
+    const userId = event.userId;
 
     const quizzes = await getAllQuizzes(userId);
     return sendResponse(200, { quizzes });
@@ -24,4 +26,6 @@ exports.handler = async (event) => {
     console.log(error);
     return sendError(500, error.message);
   }
-};
+}).use(validateToken);
+
+module.exports = { handler };

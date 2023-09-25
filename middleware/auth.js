@@ -12,7 +12,11 @@ const validateToken = {
       if (!token) throw new Error("401 Unauthorized");
 
       const data = jwt.verify(token, "a1b1c1");
-      request.event.userId = data.id;
+
+      if (!request.event.requestContext) {
+        request.event.requestContext = {};
+      }
+      request.event.requestContext.authorizer = { userId: data.id };
     } catch (error) {
       throw new Error("401 Unauthorized");
     }

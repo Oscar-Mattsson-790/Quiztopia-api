@@ -1,40 +1,49 @@
 const { sendResponse, sendError } = require("../../responses");
 const { db } = require("../../services/db");
+const middy = require("@middy/core");
+const { validateToken } = require("../../middleware/auth");
 
-async function addQuestionToQuiz(quizId, question, answer, coordinates) {
+async function addQuestionToQuiz(
+  quizId,
+  userId,
+  question,
+  answer,
+  coordinates
+) {
   const params = {
     TableName: "Quizzes",
     Key: { quizId },
     UpdateExpression: "SET questions = list_append(questions, :newQuestion)",
+    ConditionExpression: "userId = :userId",
     ExpressionAttributeValues: {
-      ":newQuestion": [
-        {
-          question,
-          answer,
-          coordinates,
-        },
-      ],
+      ":userId": userId,
+      ":newQuestion": [{ question, answer, coordinates }],
     },
   };
 
   await db.update(params).promise();
 }
 
-exports.handler = async (event) => {
-  try {
-    const { question, answer, coordinates } = JSON.parse(event.body);
-    const quizId = event.pathParameters.quizId;
+const handler = middy()
+  .use(validateToken)
+  .handler(async (event) => {
+    try {
+      const { question, answer, coordinates } = JSON.parse(event.body);
+      const quizId = event.pathParameters.quizId;
+      const userId = event.userId;
 
-    if (!question || !answer || !coordinates) {
-      return sendResponse(400, {
-        message: "All required fields must be provided",
-      });
+      if (!question || !answer || !coordinates) {
+        return sendResponse(400, {
+          message: "All required fields must be provided",
+        });
+      }
+
+      await addQuestionToQuiz(quizId, userId, question, answer, coordinates);
+      return sendResponse(200, { message: "Question added successfully" });
+    } catch (error) {
+      console.log(error);
+      return sendError(500, error.message);
     }
+  });
 
-    await addQuestionToQuiz(quizId, question, answer, coordinates);
-    return sendResponse(200, { message: "Question added successfully" });
-  } catch (error) {
-    console.log(error);
-    return sendError(500, error.message);
-  }
-};
+module.exports = { handler };

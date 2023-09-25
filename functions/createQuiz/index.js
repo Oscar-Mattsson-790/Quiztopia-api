@@ -1,6 +1,8 @@
 const { sendResponse, sendError } = require("../../responses");
 const { db } = require("../../services/db");
 const { v4: uuidv4 } = require("uuid");
+const middy = require("@middy/core");
+const { validateToken } = require("../../middleware/auth");
 
 async function createQuiz(quizName, userId) {
   const newQuiz = {
@@ -19,10 +21,10 @@ async function createQuiz(quizName, userId) {
   return newQuiz;
 }
 
-exports.handler = async (event) => {
+const handler = middy(async (event) => {
   try {
     const { quizName } = JSON.parse(event.body);
-    const userId = event.requestContext.authorizer.userId;
+    const userId = event.userId;
 
     if (!quizName) {
       return sendResponse(400, { message: "Quiz name must be provided" });
@@ -34,4 +36,6 @@ exports.handler = async (event) => {
     console.log(error);
     return sendError(500, error.message);
   }
-};
+}).use(validateToken);
+
+module.exports = { handler };
