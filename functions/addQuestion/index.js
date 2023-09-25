@@ -30,7 +30,7 @@ const handler = middy()
     try {
       const { question, answer, coordinates } = JSON.parse(event.body);
       const quizId = event.pathParameters.quizId;
-      const userId = event.userId;
+      const userId = event.requestContext.authorizer.userId;
 
       if (!question || !answer || !coordinates) {
         return sendResponse(400, {

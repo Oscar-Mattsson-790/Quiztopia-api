@@ -26,7 +26,7 @@ async function deleteQuizById(quizId, userId) {
 const handler = middy(async (event) => {
   try {
     const quizId = event.pathParameters.quizId;
-    const userId = event.userId;
+    const userId = event.requestContext.authorizer.userId;
 
     await deleteQuizById(quizId, userId);
     return sendResponse(200, { message: "Quiz deleted successfully" });

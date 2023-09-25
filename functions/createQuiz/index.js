@@ -24,7 +24,7 @@ async function createQuiz(quizName, userId) {
 const handler = middy(async (event) => {
   try {
     const { quizName } = JSON.parse(event.body);
-    const userId = event.userId;
+    const userId = event.requestContext.authorizer.userId;
 
     if (!quizName) {
       return sendResponse(400, { message: "Quiz name must be provided" });
