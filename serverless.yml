@@ -61,6 +61,18 @@ functions:
       - httpApi:
           path: /api/quiz/{quizId}
           method: DELETE
+  registerPoints:
+    handler: functions/registerPoints/index.handler
+    events:
+      - httpApi:
+          path: /api/quiz/{quizId}/registerPoints
+          method: POST
+  getTopScores:
+    handler: functions/getTopScores/index.handler
+    events:
+      - httpApi:
+          path: /api/quiz/{quizId}/topScores
+          method: GET
 
 resources:
   Resources:
