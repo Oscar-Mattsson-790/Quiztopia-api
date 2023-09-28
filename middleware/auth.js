@@ -14,7 +14,6 @@ const validateToken = {
       if (!token) throw new Error("401 Unauthorized");
 
       const data = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("JWT Secret:", process.env.JWT_SECRET);
 
       if (!request.event.requestContext) {
         request.event.requestContext = {};
