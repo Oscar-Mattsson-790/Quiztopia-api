@@ -1,22 +1,21 @@
+require("dotenv").config();
 const { sendError } = require("../responses");
 const jwt = require("jsonwebtoken");
 
 const validateToken = {
   before: async (request) => {
     try {
-      console.log("Headers:", request.event.headers);
       if (!request.event.headers || !request.event.headers.authorization) {
         throw new Error("401 Unauthorized");
       }
 
       const token = request.event.headers.authorization.replace("Bearer ", "");
 
-      console.log("Extracted Token:", token);
       if (!token) throw new Error("401 Unauthorized");
 
-      const data = jwt.verify(token, "a1b1c1");
+      const data = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("JWT Secret:", process.env.JWT_SECRET);
 
-      console.log("Decoded Data:", data);
       if (!request.event.requestContext) {
         request.event.requestContext = {};
       }
